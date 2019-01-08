@@ -1,1 +1,2 @@
 FLASK_APP=start.py
+DATABASE_URL=flask_sekeleton

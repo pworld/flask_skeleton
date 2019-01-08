@@ -1,0 +1,8 @@
+flask
+python-dotenv
+flask-wtf
+flask-restful
+flask-migrate
+flask-sqlalchemy
+
+
