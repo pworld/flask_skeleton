@@ -4,24 +4,29 @@ from flask_login import current_user, login_user,logout_user,login_required
 from werkzeug.urls import url_parse
 from datetime import datetime
 
-from app.controller.forms import LoginForm,RegistrationForm,EditProfileForm
-from app.models import User
+from app.controller.forms import LoginForm,RegistrationForm,EditProfileForm,PostForm
+from app.models import User,Post
 
-@app.route('/')
-@app.route('/index')
+#-------POST
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
+@login_required
 def index():
-    user = {'username': 'Miguel'}
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template("index.html", title='Home Page', posts=posts)
+    form = PostForm()
+    if form.validate_on_submit():
+        post = Post(body=form.post.data, author=current_user)
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post is now live!')
+    posts = current_user.followed_posts().all()
+    return render_template("index.html", title='Home Page', form=form,posts=posts)
+#------- END POST
+
+@app.route('/explore')
+@login_required
+def explore():
+    posts = Post.query.order_by(Post.timestamp.desc()).all()
+    return render_template('index.html', title='Explore', posts=posts)
 
 #-------LOGIN
 @app.route('/login', methods=['GET', 'POST'])
