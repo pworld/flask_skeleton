@@ -3,6 +3,8 @@ from app import app,db
 from flask_login import current_user, login_user,logout_user,login_required
 from werkzeug.urls import url_parse
 from datetime import datetime
+from flask import g
+from flask_babel import get_locale
 
 from app.controller.forms import LoginForm,RegistrationForm,EditProfileForm,PostForm
 from app.controller.forms import ResetPasswordRequestForm
@@ -132,6 +134,7 @@ def before_request():
     if current_user.is_authenticated:
         current_user.last_seen = datetime.utcnow()
         db.session.commit()
+    g.locale = str(get_locale())
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
