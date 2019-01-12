@@ -5,4 +5,5 @@ flask-restful
 flask-migrate
 flask-sqlalchemy
 flask-login
-
+flask-mail
+pyjwt
